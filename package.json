@@ -2,6 +2,10 @@
   "name": "@justichentai/resource-controller",
   "version": "1.0.0",
   "description": "工具包模板",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JusticHentai/resource-controller"
+  },
   "license": "ISC",
   "author": "justichentai",
   "type": "module",
@@ -9,10 +13,10 @@
   "types": "dist/utils.d.ts",
   "scripts": {
     "build": "rollup -c rollup.config.js",
-    "prepublish": "pnpm build",
-    "test": "jest"
+    "prepublish": "pnpm build"
   },
   "dependencies": {
+    "@justichentai/logger": "*",
     "core-js": "^3.34.0"
   },
   "devDependencies": {
@@ -26,16 +30,8 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
-    "@types/jest": "^29.5.11",
-    "esbuild": "^0.19.9",
-    "esbuild-jest": "^0.5.0",
-    "jest": "^29.7.0",
     "rollup": "^4.9.1",
     "rollup-plugin-dts": "^6.1.0",
     "typescript": "^5.3.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/JusticHentai/resource-controller"
   }
 }
