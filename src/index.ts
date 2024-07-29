@@ -78,7 +78,7 @@ export default class ResourceController {
     }
   }
 
-  log(filter?: Array<`${FILTER}`>) {
+  log = (filter?: Array<`${FILTER}`>) => {
     filter = filter ?? [FILTER.ADD, FILTER.LOAD, FILTER.LOAD_CURRENT]
 
     const filterList = this.logger.log().filter((log) => {
@@ -88,5 +88,14 @@ export default class ResourceController {
     return filterList.map((log) => {
       return log.content
     })
+  }
+
+  reset = () => {
+    this.logger = new Logger()
+    this.loadQueue = {
+      priorityList: [],
+      loadList: [],
+    }
+    this.resourceMap = {}
   }
 }
