@@ -1,21 +1,17 @@
-import { ApiMap as MyApiMap, Merge } from '@justichentai/types-utils'
+export interface Resource {
+  promise?: Promise<any>
+  current?: any
+}
 
-/**
- * 初始化选项
- */
-export interface Options {}
+export type ResourceMap = Record<string, Resource>
 
-/**
- * 默认选项
- */
-export interface DefaultOptions {}
+export interface ResourceOptions {
+  name: string
+  loadFn: (...params: any[]) => Promise<any>
+  priority?: number
+}
 
-/**
- * 内部选项
- */
-export type InnerOptions = Merge<Options, DefaultOptions> & Record<string, any>
-
-/**
- * 映射列表类型
- */
-export type ApiMap = MyApiMap<InnerOptions>
+export type LoadQueue = {
+  priorityList: number[]
+  loadList: ResourceOptions[][]
+}
