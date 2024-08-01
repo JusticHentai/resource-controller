@@ -3,6 +3,7 @@ import FILTER from './config/filter'
 import { LoadQueue, ResourceMap, ResourceOptions } from './types'
 import addNoPriorityToQueue from './utils/addNoPriorityToQueue'
 import addPriorityToQueue from './utils/addPriorityToQueue'
+import nextTick from './utils/nextTick'
 
 export default class ResourceController {
   resourceMap: ResourceMap = {}
@@ -16,6 +17,11 @@ export default class ResourceController {
     this.logger.info('add', options, '__STOP__')
 
     const { priority, name } = options
+
+    // 去重
+    if (this.resourceMap[name]) {
+      return
+    }
 
     priority
       ? addPriorityToQueue(this.loadQueue, options)
@@ -48,7 +54,8 @@ export default class ResourceController {
         const promise = loadFn()
         promiseList.push(promise)
         nameList.push(name)
-        this.resourceMap[name] = { promise }
+
+        this.resourceMap[name] = { promise: nextTick(promise) } // 让外部等 rc 处理完再运行
       }
 
       const resList = await Promise.all(promiseList)
