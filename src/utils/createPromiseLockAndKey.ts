@@ -14,6 +14,7 @@ const createPromiseLockAndKey = () => {
   }
 
   return {
+    // @ts-ignore ts 检测不了 promise 的执行
     resolve: promiseKey,
     promise: promise(),
   }
