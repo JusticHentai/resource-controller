@@ -1,5 +1,6 @@
 export interface Resource {
-  promise?: Promise<any>
+  resolve: (...params: any[]) => void
+  promise: Promise<any>
   current?: any
 }
 
