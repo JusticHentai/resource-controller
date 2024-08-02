@@ -1,5 +1,5 @@
 const createPromiseLockAndKey = () => {
-  let promiseKey: (...params: any[]) => void
+  let promiseKey: (...params: any[]) => void = () => {}
 
   const promiseLock = new Promise((resolve) => {
     promiseKey = resolve
@@ -14,7 +14,6 @@ const createPromiseLockAndKey = () => {
   }
 
   return {
-    // @ts-ignore ts 检测不了 promise 的执行
     resolve: promiseKey,
     promise: promise(),
   }
