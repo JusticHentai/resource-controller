@@ -35,6 +35,11 @@ export default class ResourceController {
 
     const { priorityList, loadList } = this.loadQueue
 
+    this.loadQueue = {
+      priorityList: [],
+      loadList: [],
+    }
+
     for (let j = 0; j < loadList.length; j++) {
       const currentList = loadList[j]
 
@@ -77,11 +82,6 @@ export default class ResourceController {
     }
 
     this.logger.info('load complete', this.loadQueue, '__STOP__')
-
-    this.loadQueue = {
-      priorityList: [],
-      loadList: [],
-    }
   }
 
   log = (filter?: Array<`${FILTER}`>) => {
