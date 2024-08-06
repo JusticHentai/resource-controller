@@ -11,7 +11,14 @@ export default class ResourceController {
     priorityList: [],
     loadList: [],
   }
+  loadQueueImmediately: LoadQueue = {
+    priorityList: [],
+    loadList: [],
+  }
   logger = new Logger()
+  lock = {
+    loadImmediately: true,
+  }
 
   add = (options: ResourceOptions) => {
     this.logger.info('add', options, '__STOP__')
@@ -82,6 +89,31 @@ export default class ResourceController {
     }
 
     this.logger.info('load complete', this.loadQueue, '__STOP__')
+  }
+
+  addImmediately = (options: ResourceOptions) => {
+    const { priority, name } = options
+
+    // 去重
+    if (this.resourceMap[name]) {
+      return
+    }
+
+    priority
+      ? addPriorityToQueue(this.loadQueue, options)
+      : addNoPriorityToQueue(this.loadQueue, options)
+
+    this.resourceMap[name] = createPromiseLockAndKey()
+
+    this.loadImmediately()
+  }
+
+  loadImmediately = () => {
+    if (!this.lock['loadImmediately']) {
+      return
+    }
+
+    this.lock['loadImmediately'] = false
   }
 
   log = (filter?: Array<`${FILTER}`>) => {

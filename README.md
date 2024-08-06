@@ -1,34 +1,55 @@
-# Utils-template
+# Resource-controller
 
-工具包模板
+## 简介
 
-## 开发
+- 资源管理器
+- 用于统一管理资源的加载和使用
 
-安装依赖
+## 安装
 
-```bash
-pnpm i
+```ts
+npm i @justichentai/resource-controller
 ```
 
-然后在 `./src` 中开发
+## 使用
 
-## 单测
+- 新建实例
 
-内置 `jest` 在 `./test` 中写单元测试
+```ts
+import ResourceController from '@justichentai/resource-controller';
 
-运行命令进行测试
-```bash
-pnpm test
+const resourceController = new ResourceController()
 ```
 
-## 打包
+- 添加一个资源
+    - 名字
+    - 加载函数
+    - 优先级
 
-```bash
-pnpm build
+```ts
+resourceController.add({
+  name: 'name',
+  loadFn: async () => {...},
+  priority: 1,
+})
 ```
 
-## 发包
+- 加载当前 `add` 的资源
+    - 按优先级依次并发加载
+    - 没有优先级会放最后
 
-```bash
-pnpm publish --access public
+```ts
+resourceController.load()
+```
+
+- 使用资源
+
+```ts 
+const {promise} = resourceController.resourceMap[name]
+
+await promise
+
+const {current} = resourceController.resourceMap[name]
+
+// current 是 loadFn 返回的内容可以直接使用
 ```
