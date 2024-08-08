@@ -4,6 +4,7 @@ import { LoadQueue, ResourceMap, ResourceOptions } from './types'
 import addNoPriorityToQueue from './utils/addNoPriorityToQueue'
 import addPriorityToQueue from './utils/addPriorityToQueue'
 import createPromiseLockAndKey from './utils/createPromiseLockAndKey'
+import loadCurrent from './utils/loadCurrent'
 
 export default class ResourceController {
   resourceMap: ResourceMap = {}
@@ -91,7 +92,7 @@ export default class ResourceController {
     this.logger.info('load complete', this.loadQueue, '__STOP__')
   }
 
-  addImmediately = (options: ResourceOptions) => {
+  addImmediately = async (options: ResourceOptions) => {
     const { priority, name } = options
 
     // 去重
@@ -100,20 +101,24 @@ export default class ResourceController {
     }
 
     priority
-      ? addPriorityToQueue(this.loadQueue, options)
-      : addNoPriorityToQueue(this.loadQueue, options)
+      ? addPriorityToQueue(this.loadQueueImmediately, options)
+      : addNoPriorityToQueue(this.loadQueueImmediately, options)
 
     this.resourceMap[name] = createPromiseLockAndKey()
 
-    this.loadImmediately()
+    await this.loadImmediately()
   }
 
-  loadImmediately = () => {
+  loadImmediately = async () => {
     if (!this.lock['loadImmediately']) {
       return
     }
 
     this.lock['loadImmediately'] = false
+
+    await loadCurrent(this.loadQueueImmediately, this.resourceMap)
+
+    this.lock['loadImmediately'] = true
   }
 
   log = (filter?: Array<`${FILTER}`>) => {
