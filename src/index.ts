@@ -34,7 +34,7 @@ export default class ResourceController {
   }
 
   load = async () => {
-    const { priorityList, loadList } = this.loadQueue
+    const { loadList } = this.loadQueue
 
     this.loadQueue = {
       priorityList: [],
