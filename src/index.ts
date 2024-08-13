@@ -1,5 +1,3 @@
-import Logger from '@justichentai/logger'
-import FILTER from './config/filter'
 import { LoadQueue, ResourceMap, ResourceOptions } from './types'
 import addNoPriorityToQueue from './utils/addNoPriorityToQueue'
 import addPriorityToQueue from './utils/addPriorityToQueue'
@@ -16,14 +14,11 @@ export default class ResourceController {
     priorityList: [],
     loadList: [],
   }
-  logger = new Logger()
   lock = {
     loadImmediately: true,
   }
 
   add = (options: ResourceOptions) => {
-    this.logger.info('add', options, '__STOP__')
-
     const { priority, name } = options
 
     // 去重
@@ -39,8 +34,6 @@ export default class ResourceController {
   }
 
   load = async () => {
-    this.logger.info('load start', this.loadQueue, '__STOP__')
-
     const { priorityList, loadList } = this.loadQueue
 
     this.loadQueue = {
@@ -50,15 +43,6 @@ export default class ResourceController {
 
     for (let j = 0; j < loadList.length; j++) {
       const currentList = loadList[j]
-
-      this.logger.info(
-        'load_current start',
-        {
-          priority: priorityList[j],
-          currentList,
-        },
-        '__STOP__'
-      )
 
       const promiseList = []
       const nameList = []
@@ -78,18 +62,7 @@ export default class ResourceController {
         this.resourceMap[name]['current'] = res
         this.resourceMap[name]['resolve']() // 解锁 promise
       }
-
-      this.logger.info(
-        'load_current complete',
-        {
-          priority: priorityList[j],
-          currentList,
-        },
-        '__STOP__'
-      )
     }
-
-    this.logger.info('load complete', this.loadQueue, '__STOP__')
   }
 
   addImmediately = async (options: ResourceOptions) => {
@@ -121,20 +94,7 @@ export default class ResourceController {
     this.lock['loadImmediately'] = true
   }
 
-  log = (filter?: Array<`${FILTER}`>) => {
-    filter = filter ?? [FILTER.ADD, FILTER.LOAD, FILTER.LOAD_CURRENT]
-
-    const filterList = this.logger.log().filter((log) => {
-      return filter.includes(log.content[0].split(' ')[0])
-    })
-
-    return filterList.map((log) => {
-      return log.content
-    })
-  }
-
   reset = () => {
-    this.logger = new Logger()
     this.loadQueue = {
       priorityList: [],
       loadList: [],
